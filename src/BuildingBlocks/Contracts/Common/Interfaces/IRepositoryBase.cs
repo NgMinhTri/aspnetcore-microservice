@@ -18,7 +18,7 @@ public interface IRepositoryQueryBase<T, K, TContext> where T : EntityBase<K> wh
     Task<T?> GetByIdAsync(K id, params Expression<Func<T, object>>[] includeProperties);
 }
 
-public interface IRepositoryBaseAsync<T, K, TContext> : IRepositoryQueryBase<T, K, TContext>
+public interface IRepositoryBase<T, K, TContext> : IRepositoryQueryBase<T, K, TContext>
     where T : EntityBase<K>
     where TContext : DbContext
 {

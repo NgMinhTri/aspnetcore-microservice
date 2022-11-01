@@ -1,5 +1,6 @@
 using Common.Logging;
 using Contracts.Common.Interfaces;
+using Customer.API.Controllers;
 using Customer.API.Persistence;
 using Customer.API.Repositories;
 using Customer.API.Repositories.Interfaces;
@@ -30,16 +31,16 @@ try
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
     builder.Services.AddScoped<ICustomerRepository, CustomerRepository>()
-        .AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBaseAsync<,,>))
-        .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
+        .AddScoped(typeof(IRepositoryQueryBase<,,>), typeof(RepositoryQueryBase<,,>))
         .AddScoped<ICustomerService, CustomerService>();
 
     var app = builder.Build();
 
     app.MapGet("/", () => "Welcome to Customer API!");
 
-    app.MapGet("/api/customers/{username}", async (string username, ICustomerService customerService) =>
-        await customerService.GetCustomerByUsernameAsync(username));
+    //app.MapGet("/api/customers/{username}", async (string username, ICustomerService customerService) =>
+    //    await customerService.GetCustomerByUsernameAsync(username));
+    app.MapCustomersAPI();
 
     app.UseHttpsRedirection();
 
