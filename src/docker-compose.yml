@@ -50,6 +50,13 @@ services:
       dockerfile: Services/Customer.API/Dockerfile
 
 
+  basket.api:
+    image: ${DOCKER_REGISTRY-}baskset-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Basket.API/Dockerfile
+
+
 
 #network section
 networks:
