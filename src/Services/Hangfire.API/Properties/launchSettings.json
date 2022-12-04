@@ -1,23 +1,23 @@
-﻿{
+{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:12305",
-      "sslPort": 44317
+      "applicationUrl": "http://localhost:62066/",
+      "sslPort": 44384
     }
   },
   "profiles": {
     "Hangfire.API": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7052;http://localhost:5052",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:7052;http://localhost:5052",
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
