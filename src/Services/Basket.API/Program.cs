@@ -1,4 +1,5 @@
 
+using Basket.API;
 using Basket.API.Extensions;
 using Common.Logging;
 using Serilog;
@@ -14,11 +15,16 @@ try
 {
     builder.Host.UseSerilog(Serilogger.Configure);
     builder.Host.AddAppConfigurations();
+    builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
+    builder.Services.AddConfigurationSettings(builder.Configuration);
 
     // Add services to the container.
     builder.Services.ConfigureServices();
     builder.Services.ConfigureRedis(builder.Configuration);
     builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+    //configure Mass transit
+    builder.Services.ConfigurationMassTransit();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
