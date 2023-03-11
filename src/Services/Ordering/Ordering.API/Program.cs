@@ -12,14 +12,16 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog(Serilogger.Configure);
 
-Log.Information("Start Ordering AAddPI up");
+Log.Information($"Start {builder.Environment.ApplicationName} up");
 
 try
 {
     // Add services to the container.
-    builder.Services.AddApplicationServices();
+    builder.Host.AddAppConfigurations();
     builder.Services.AddConfigurationSettings(builder.Configuration);
+    builder.Services.AddApplicationServices();
     builder.Services.AddInfrastructureServices(builder.Configuration);
+    builder.Services.ConfigureMassTransit();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,13 +39,15 @@ try
                     "Swagger Order API v1"));
     }
 
-    //Initialise and seed database
+    // Initialise and seed database
     using (var scope = app.Services.CreateScope())
     {
         var orderContextSeed = scope.ServiceProvider.GetRequiredService<OrderContextSeed>();
         await orderContextSeed.InitialiseAsync();
         await orderContextSeed.SeedAsync();
     }
+
+    //app.UseMiddleware<ErrorWrappingMiddleware>();
 
     // app.UseHttpsRedirection(); //production only
     app.UseRouting();
@@ -65,6 +69,6 @@ catch (Exception ex)
 }
 finally
 {
-    Log.Information("Shut down Ordering API complete");
+    Log.Information($"Shut down {builder.Environment.ApplicationName} complete");
     Log.CloseAndFlush();
 }
