@@ -17,20 +17,16 @@ namespace Ordering.Application.Features.V1.Orders.Commands.DeleteOrder
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
+        async Task<Unit> IRequestHandler<DeleteOrderCommand, Unit>.Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            var orderEntity = await _orderRepository.GetByIdAsync(request.Id);
+           var orderEntity = await _orderRepository.GetByIdAsync(request.Id);
             if (orderEntity == null) throw new NotFoundException(nameof(Order), request.Id);
-            await _orderRepository.DeleteAsync(orderEntity);
-            //orderEntity.DeletedOrder();
+            _orderRepository.DeleteOrder(orderEntity);
+            orderEntity.DeletedOrder();
             await _orderRepository.SaveChangesAsync();
 
             _logger.Information($"Order {orderEntity.Id} was successfully deleted.");
-        }
-
-        Task<Unit> IRequestHandler<DeleteOrderCommand, Unit>.Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            return Unit.Value;
         }
     }
 }

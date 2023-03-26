@@ -23,8 +23,8 @@ namespace Ordering.Application.Features.V1.Orders.Commands.CreateOrder
         {
             _logger.Information($"BEGIN: {MethodName} - Username: {request.UserName}");
             var orderEntity = _mapper.Map<Order>(request);
-            await _orderRepository.CreateAsync(orderEntity);
-            //orderEntity.AddedOrder();
+            _orderRepository.CreateOrder(orderEntity);
+            orderEntity.AddedOrder();
             await _orderRepository.SaveChangesAsync();
 
             _logger.Information($"Order {orderEntity.Id}  was successfully created.");
