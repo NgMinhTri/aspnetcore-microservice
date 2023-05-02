@@ -32,4 +32,5 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
             throw new ValidationException(failures);
         return await next();
     }
+
 }

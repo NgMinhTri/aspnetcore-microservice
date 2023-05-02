@@ -1,18 +1,27 @@
-﻿using Contracts.Domains.Interfaces;
+﻿using Contracts.Common.Events;
+using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
+using Infrastructure.Extensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Domain.Entities;
+using Serilog;
 using System.Reflection;
 
 namespace Ordering.Infrastructure.Persistence
 {
     public class OrderContext : DbContext
     {
-        public OrderContext(DbContextOptions<OrderContext> options) : base(options)
+        private readonly IMediator _mediator;
+        private readonly ILogger _logger;
+        public OrderContext(DbContextOptions<OrderContext> options, IMediator mediator, ILogger logger) : base(options)
         {
-
+            _mediator= mediator;
+            _logger= logger;
         }
 
         public DbSet<Order> Orders { get; set; }
+        private List<BaseEvent> _baseEvents;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,8 +29,23 @@ namespace Ordering.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
         }
 
+        //save object before removing 
+        private void SetBaseEventBeforeSaveChanges()
+        {
+            var domainEntities = ChangeTracker.Entries<IEventEntity>()
+                .Select(x => x.Entity)
+                .Where(x => x.DomainEvent().Any())
+                .ToList();
+
+            _baseEvents = domainEntities
+             .SelectMany(x => x.DomainEvent())
+             .ToList();
+
+            domainEntities.ForEach(x => x.ClearDomainEvent());
+        }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            SetBaseEventBeforeSaveChanges();
             var modified = ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Modified ||
                             e.State == EntityState.Added ||
@@ -49,7 +73,9 @@ namespace Ordering.Infrastructure.Persistence
                         break;
                 }
             }
-            return base.SaveChangesAsync(cancellationToken);
+            var result =  base.SaveChangesAsync(cancellationToken);
+            _mediator.DispatchDomainEventsAsync(_baseEvents, _logger);
+            return result;
         }
     }
 }

@@ -2,7 +2,8 @@
 
 namespace Contracts.Common.Events
 {
-    public class BaseEvent : INotification
+    public abstract class BaseEvent : INotification
     {
+
     }
 }

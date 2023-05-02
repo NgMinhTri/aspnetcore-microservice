@@ -16,6 +16,23 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         _logger = logger;
     }
 
+    //public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    //{
+    //    _timer.Start();
+    //    var response = await next();
+    //    _timer.Stop();
+
+    //    var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+
+    //    if (elapsedMilliseconds <= 500) return response;
+
+    //    var requestName = typeof(TRequest).Name;
+    //    _logger.LogWarning("Application Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
+    //        requestName, elapsedMilliseconds, request);
+
+    //    return response;
+    //}
+
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
         _timer.Start();
