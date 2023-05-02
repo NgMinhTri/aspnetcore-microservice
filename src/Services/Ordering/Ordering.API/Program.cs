@@ -1,11 +1,9 @@
 using Common.Logging;
-using MassTransit;
 using Ordering.API.Extensions;
 using Ordering.Application;
 using Ordering.Infrastructure;
 using Ordering.Infrastructure.Persistence;
 using Serilog;
-using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

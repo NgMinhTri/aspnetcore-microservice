@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.API", "src\Services\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Customer.API", "src\Services\Customer.API\Customer.API.csproj", "{4DE3C5AC-5FC4-44D8-8EEF-1FC7EC888693}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.API", "src\Services\Inventory.API\Inventory.API.csproj", "{2203F86F-547B-464D-8907-BBD189721450}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Product.API", "src\Services\Inventory.API\Inventory.Product.API.csproj", "{2203F86F-547B-464D-8907-BBD189721450}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.API", "src\Services\Product.API\Product.API.csproj", "{AC0D8E62-AD08-4C1F-AAD5-00BC62BCE5B4}"
 EndProject
