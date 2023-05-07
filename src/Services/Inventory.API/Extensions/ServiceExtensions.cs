@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Extensions;
+using Inventory.Product.API.Services;
+using Inventory.Product.API.Services.Interfaces;
 using MongoDB.Driver;
 using Shared.Configurations;
 
@@ -38,6 +40,7 @@ public static class ServiceExtensions
     public static void AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
+        services.AddScoped<IEnventoryService, EnventoryService>();
     }
 
 
