@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Infrastructure.Extensions;
 using Inventory.Product.API.Entities;
 using Inventory.Product.API.Extensions;
 using Inventory.Product.API.Repositories;
@@ -7,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Shared.Configurations;
 using Shared.DTOs.Inventory;
+using Shared.SeedWork;
 
 namespace Inventory.Product.API.Services
 {
@@ -36,9 +38,10 @@ namespace Inventory.Product.API.Services
             }
 
             var andFilter = filterItemNo & filterSearchTerm;
-            var pagedList = await Collection.Find(andFilter)
-                .Skip((query.PageNumber - 1) * query.PageSize).Limit(query.PageSize).ToListAsync();
-            var result = _mapper.Map<IEnumerable<InventoryEntryDto>>(pagedList);
+            var pagedList = await Collection.PaginatedListAsync(andFilter, pageIndex: query.PageIndex, pageNumber: query.PageSize);
+            var items = _mapper.Map<IEnumerable<InventoryEntryDto>>(pagedList);
+            var result = new PagedList<InventoryEntryDto>(items, pagedList.GetMetaData().TotalItems, query.PageIndex,
+                query.PageSize);
             return result;
         }
 
