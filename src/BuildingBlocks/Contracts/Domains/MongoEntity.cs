@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
-namespace Inventory.Product.API.Entities.Abstraction
+namespace Contracts.Domains
 {
     public class MongoEntity
     {

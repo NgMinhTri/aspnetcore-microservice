@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Basket.API.Entities;
+using Basket.API.GrpcService;
 using Basket.API.Repositories.Interfaces;
 using EvenBus.Messages.Events;
 using MassTransit;
@@ -19,12 +20,17 @@ namespace Basket.API.Controllers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly StockItemGrpcService _stockItemGrpcService;
 
-        public BasketsController(IBasketRepository basketRepository, IMapper mapper, IPublishEndpoint publishEndpoint)
+        public BasketsController(IBasketRepository basketRepository, 
+                                IMapper mapper, 
+                                IPublishEndpoint publishEndpoint,
+                                StockItemGrpcService stockItemGrpcService)
         {
             _basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
         }
 
         [HttpGet("{username}", Name = "GetBasket")]
@@ -42,16 +48,18 @@ namespace Basket.API.Controllers
         [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Cart>> UpdateBasket([FromBody] Cart cart)
         {
-            //_logger.Information($"BEGIN: UpdateBasket for {cart.Username}");
+            // Communicate with Inventory.Product.Grpc and check quantity available of products
+            foreach (var item in cart.Items)
+            {
+                var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
+                item.SetAvailableQuantity(stock.Quantity);
+            }
+
             var options = new DistributedCacheEntryOptions()
-                //set the absolute expiration time.
                 .SetAbsoluteExpiration(DateTime.UtcNow.AddMinutes(10))
-                //a cached object will be expired if it not being requested for a defined amount of time period.
-                //Sliding Expiration should always be set lower than the absolute expiration.
                 .SetSlidingExpiration(TimeSpan.FromMinutes(2));
 
             var result = await _basketRepository.UpdateBasket(cart, options);
-            //_logger.Information($"END: UpdateBasket for {cart.Username}");
             return Ok(result);
         }
 
