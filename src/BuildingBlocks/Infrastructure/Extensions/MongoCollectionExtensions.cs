@@ -1,5 +1,5 @@
-﻿using MongoDB.Driver;
-using Shared.SeedWork;
+﻿using Infrastructure.Common.Models;
+using MongoDB.Driver;
 
 namespace Infrastructure.Extensions
 {

@@ -24,5 +24,4 @@ public class PagingRequestParameters
         }
     }
 
-    public string OrderBy { get; set; }
 }
