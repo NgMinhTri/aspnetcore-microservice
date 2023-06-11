@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvenBus.Messages", "src\Bui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Product.API", "src\Services\Inventory.API\Inventory.Product.API\Inventory.Product.API.csproj", "{41AA2F2B-DB60-4E8A-9A61-9FE555A9372D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Grpc", "src\Services\Inventory.API\Inventory.Grpc\Inventory.Grpc\Inventory.Grpc.csproj", "{4FD217FE-545D-48FC-8010-41B9F7006D17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Grpc", "src\Services\Inventory.API\Inventory.Grpc\Inventory.Grpc.csproj", "{354287D2-6AB2-404F-BFDE-DCED408DF9A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,10 +141,10 @@ Global
 		{41AA2F2B-DB60-4E8A-9A61-9FE555A9372D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41AA2F2B-DB60-4E8A-9A61-9FE555A9372D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41AA2F2B-DB60-4E8A-9A61-9FE555A9372D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FD217FE-545D-48FC-8010-41B9F7006D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FD217FE-545D-48FC-8010-41B9F7006D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FD217FE-545D-48FC-8010-41B9F7006D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FD217FE-545D-48FC-8010-41B9F7006D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{354287D2-6AB2-404F-BFDE-DCED408DF9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{354287D2-6AB2-404F-BFDE-DCED408DF9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{354287D2-6AB2-404F-BFDE-DCED408DF9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{354287D2-6AB2-404F-BFDE-DCED408DF9A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,7 +177,7 @@ Global
 		{AA5C75C9-7EBB-4B9E-A2C4-93E7C7142C09} = {C118B541-2674-4F08-A833-E6986CFD4187}
 		{290DFA01-9A45-4A79-AA11-DD6AE3141380} = {AA5C75C9-7EBB-4B9E-A2C4-93E7C7142C09}
 		{41AA2F2B-DB60-4E8A-9A61-9FE555A9372D} = {7DDD60A6-11F0-4AED-BED3-12E89805C406}
-		{4FD217FE-545D-48FC-8010-41B9F7006D17} = {7DDD60A6-11F0-4AED-BED3-12E89805C406}
+		{354287D2-6AB2-404F-BFDE-DCED408DF9A2} = {7DDD60A6-11F0-4AED-BED3-12E89805C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {114588C3-BADA-4A8D-AAD3-1CB15EA7C2F7}
