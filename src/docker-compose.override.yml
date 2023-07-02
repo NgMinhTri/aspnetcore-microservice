@@ -163,3 +163,29 @@ services:
     ports:
       - "6005:80"
     restart: always
+
+  inventory.product.api:
+    container_name: inventory.product.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "MongoDbSettings:ConnectionString=mongodb://inventorydb"
+      - "MongoDbSettings:DatabaseName=InventoryDb"
+    depends_on:
+      - inventorydb
+    ports:
+      - "6006:80"
+    restart: always
+  
+  inventory.grpc:
+    container_name: inventory.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+      - ASPNETCORE_URLS=http://+:80
+      - "MongoDbSettings:ConnectionString=mongodb://inventorydb"
+      - "MongoDbSettings:DatabaseName=InventoryDb"
+    depends_on:
+      - inventorydb
+    ports:
+      - "6007:80"
+    restart: always

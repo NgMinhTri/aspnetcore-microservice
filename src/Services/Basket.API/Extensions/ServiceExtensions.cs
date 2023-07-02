@@ -1,9 +1,11 @@
-﻿using Basket.API.Repositories;
+﻿using Basket.API.GrpcService;
+using Basket.API.Repositories;
 using Basket.API.Repositories.Interfaces;
 using Contracts.Common.Interfaces;
 using EvenBus.Messages.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Extensions;
+using Inventory.Grpc.Client;
 using MassTransit;
 using Shared.Configurations;
 
@@ -20,6 +22,10 @@ namespace Basket.API.Extensions
 
             var cacheSettings = configuration.GetSection(nameof(CacheSettings))
                 .Get<CacheSettings>();
+            services.AddSingleton(cacheSettings);
+
+            var grpcSettings = configuration.GetSection(nameof(GrpcSettings)).Get<GrpcSettings>();
+            services.AddSingleton(grpcSettings);
             return services;
         } 
        
@@ -39,6 +45,14 @@ namespace Basket.API.Extensions
             {
                 options.Configuration = settings.ConnectionString;
             });
+        }
+
+
+        public static void ConfigureGrpcService(this IServiceCollection services)
+        {
+            var settings = services.GetOptions<GrpcSettings>(nameof(GrpcSettings));
+            services.AddGrpcClient<StockProtoService.StockProtoServiceClient>(x => x.Address = new Uri(settings.StockUrl));
+            services.AddScoped<StockItemGrpcService>();
         }
 
         public static void ConfigurationMassTransit(this IServiceCollection services)
