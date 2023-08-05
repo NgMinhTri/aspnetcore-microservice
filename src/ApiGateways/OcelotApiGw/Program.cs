@@ -1,4 +1,3 @@
-
 using Infrastructure.Middlewares;
 using Ocelot.Middleware;
 using OcelotApiGw.Extensions;
@@ -23,6 +22,7 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.ConfigureOcelot(builder.Configuration);
     builder.Services.ConfigureCors(builder.Configuration);
+    builder.Services.AddJwtAuthentication();
 
     var app = builder.Build();
 
@@ -37,15 +37,12 @@ try
     app.UseCors("CorsPolicy");
 
     app.UseMiddleware<ErrorWrappingMiddleware>();
-    // app.UseAuthentication();
+    app.UseAuthentication();
     app.UseRouting();
-    // app.UseHttpsRedirection();
-    // app.UseAuthorization();
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapGet("/", context =>
         {
-            // await context.Response.WriteAsync($"Hello TEDU members! This is {builder.Environment.ApplicationName}");
             context.Response.Redirect("swagger/index.html");
             return Task.CompletedTask;
         });
