@@ -22,13 +22,11 @@
       ]
     },
 
-    // Product api:  http://localhost:5002/api/customers
+    // Product api:  http://localhost:5002/api/products
     {
       "UpstreamPathTemplate": "/products/{any}",
       "UpstreamHttpMethod": [
-        "GET",
-        "PUT",
-        "DELETE"
+        "GET"
       ],
       "DownstreamPathTemplate": "/api/products/{any}",
       "DownstreamScheme": "http",
@@ -39,7 +37,24 @@
         }
       ]
     },
-
+    {
+      "UpstreamPathTemplate": "/products/{any}",
+      "UpstreamHttpMethod": [
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/products/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
+    },
     {
       "UpstreamPathTemplate": "/products",
       "UpstreamHttpMethod": [
