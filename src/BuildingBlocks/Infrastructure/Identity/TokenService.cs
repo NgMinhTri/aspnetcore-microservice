@@ -28,13 +28,13 @@ namespace Infrastructure.Identity
 
         private string GenerateEncryptedToken(SigningCredentials signingCredentials)
         {
-            var claims = new[]
-            {
-                new Claim("Role", "Admin")
-            };
+            //var claims = new[]
+            //{
+            //    new Claim("Role", "Admin")
+            //};
             var token = new JwtSecurityToken(
                 expires: DateTime.Now.AddMinutes(30),
-                claims: claims,
+                //claims: claims,
                 signingCredentials: signingCredentials);
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);

@@ -1,0 +1,234 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://apigw.ocelot"
+  },
+  "JwtSettings": {
+    "Key": "TOKENVALIDATIONOCELOTSECRET123^%$"
+  },
+  "Routes": [
+    // Customer api: http://localhost:5003/api/customers
+    {
+      "UpstreamPathTemplate": "/customers/{username}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/customers/{username}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6003
+        }
+      ]
+    },
+
+    // Product api:  http://localhost:5002/api/products
+    {
+      "UpstreamPathTemplate": "/products/{any}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/products/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6002
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/products/{any}",
+      "UpstreamHttpMethod": [
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/products/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6002
+        }
+      ],
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6002
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [], //the client in this array will not be affected by the limit
+        "EnableRateLimiting": true,
+        "Period": "2s",
+        "PeriodTimespan": 1, // retry after a certain number of seconds
+        "Limit":  1 //the maximum number of request that a client can make in a defined period
+      }
+    },
+
+    {
+      "UpstreamPathTemplate": "/products/get-product-by-no/{any}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/products/get-product-by-no/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6002
+        }
+      ]
+    },
+
+    // Basket api:  http://localhost:5004/api/baskets
+    {
+      "UpstreamPathTemplate": "/baskets/{any}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/baskets/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6004
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/baskets",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/baskets",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6004
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/baskets/checkout",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/baskets/checkout",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6004
+        }
+      ]
+    },
+
+    // Order api:  http://localhost:5005/api/{version}/orders
+    {
+      "UpstreamPathTemplate": "/{version}/orders/{any}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/{version}/orders/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6005
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/{version}/orders",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/{version}/orders",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6005
+        }
+      ]
+    },
+
+    // Inventory api:  http://localhost:5006/api/inventory
+    {
+      "UpstreamPathTemplate": "/inventory/items/{any}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/inventory/items/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6006
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/inventory/items/{any}/paging",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/inventory/items/{any}/paging",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6006
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/inventory/{any}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/inventory/{any}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6006
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/inventory/purchase/{itemNo}",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/inventory/purchase/{itemNo}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 6006
+        }
+      ]
+    }
+  ]
+}

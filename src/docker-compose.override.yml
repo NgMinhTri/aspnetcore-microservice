@@ -189,3 +189,23 @@ services:
     ports:
       - "6007:80"
     restart: always
+
+
+  apigw.ocelot:
+    container_name: apigw.ocelot
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+      - ASPNETCORE_URLS=http://+:80
+      - GlobalConfiguration:BaseUrl=http://apigw.ocelot
+      - ApiConfiguration:ApiBaseUrl=http://apigw.ocelot
+      - ApiConfiguration:IdentityServerBaseUrl=http://localhost:6001
+      - ApiConfiguration:IssuerUri=http://tedu.identity.api
+    depends_on:
+      - customer.api
+      - basket.api
+      - product.api
+      - ordering.api
+      - inventory.product.api
+    ports:
+      - "6001:80"
+    restart: always

@@ -43,7 +43,7 @@ namespace Product.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto productDto)
         {
             var productEntity = await _repository.GetProductByNo(productDto.No);
@@ -57,7 +57,7 @@ namespace Product.API.Controllers
         }
 
         [HttpPut("{id:long}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> UpdateProduct([Required] long id, [FromBody] UpdateProductDto productDto)
         {
             var product = await _repository.GetProduct(id);
@@ -72,7 +72,7 @@ namespace Product.API.Controllers
         }
 
         [HttpDelete("{id:long}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> DeleteProduct([Required] long id)
         {
             var product = await _repository.GetProduct(id);
