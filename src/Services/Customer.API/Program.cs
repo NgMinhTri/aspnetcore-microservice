@@ -1,12 +1,14 @@
 using Common.Logging;
 using Contracts.Common.Interfaces;
 using Customer.API.Controllers;
+using Customer.API.Extensions;
 using Customer.API.Persistence;
 using Customer.API.Repositories;
 using Customer.API.Repositories.Interfaces;
 using Customer.API.Services;
 using Customer.API.Services.Interfaces;
 using Infrastructure.Common;
+using Infrastructure.ScheduledJobs;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -16,39 +18,41 @@ Log.Information("Start Customer API up");
 
 try
 {
-
-
+    builder.Host.AddAppConfigurations();
     // Add services to the container.
-
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+    builder.Services.ConfigureCustomerContext();
+    builder.Services.AddInfrastructureServices();
+    builder.Services.AddHangfireService();
 
-    builder.Services.AddDbContext<CustomerContext>(options =>
-        options.UseNpgsql(connectionString));
-
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-    builder.Services.AddScoped<ICustomerRepository, CustomerRepository>()
-        .AddScoped(typeof(IRepositoryQueryBase<,,>), typeof(RepositoryQueryBase<,,>))
-        .AddScoped<ICustomerService, CustomerService>();
 
     var app = builder.Build();
 
     app.MapGet("/", () => "Welcome to Customer API!");
 
-    //app.MapGet("/api/customers/{username}", async (string username, ICustomerService customerService) =>
-    //    await customerService.GetCustomerByUsernameAsync(username));
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
+                $"{builder.Environment.ApplicationName} v1"));
+        });
+    }
     app.MapCustomersAPI();
-
-    app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
+    app.UseHangfireDashboard(builder.Configuration);
+
     app.MapControllers();
-    app.SeedCustomerData()
-        .Run();
+
+    app.SeedCustomerData().Run();
 }
 catch (Exception ex)
 {

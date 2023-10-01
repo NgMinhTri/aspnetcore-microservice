@@ -1,4 +1,4 @@
-using Common.Logging;
+﻿using Common.Logging;
 using Product.API.Extensions;
 using Product.API.Persistence;
 using Serilog;
@@ -15,11 +15,16 @@ try
     builder.Host.UseSerilog(Serilogger.Configure);
     builder.Host.AddAppConfigurations();
 
+    //add configuration lấy từ appsetting.json
+    builder.Services.AddConfigurationSettings(builder.Configuration);
+  
+
     builder.Services.AddInfrastructure(builder.Configuration);
 
 
     var app = builder.Build();
 
+    //cấu hình các middleware 
     app.UseInfrastructure();
 
     app.MigrateDatabase<ProductContext>((context, _) =>
