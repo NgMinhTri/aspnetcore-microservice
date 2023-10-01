@@ -2,6 +2,7 @@
 using Basket.API.Entities;
 using Basket.API.GrpcService;
 using Basket.API.Repositories.Interfaces;
+using Basket.API.Services.Interfaces;
 using EvenBus.Messages.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,19 @@ namespace Basket.API.Controllers
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly StockItemGrpcService _stockItemGrpcService;
+        private readonly IEmailTemplateService _emailTemplateService;
 
         public BasketsController(IBasketRepository basketRepository, 
                                 IMapper mapper, 
                                 IPublishEndpoint publishEndpoint,
-                                StockItemGrpcService stockItemGrpcService)
+                                StockItemGrpcService stockItemGrpcService,
+                                IEmailTemplateService emailTemplateService)
         {
             _basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
+            _emailTemplateService = emailTemplateService ?? throw new ArgumentNullException(nameof(emailTemplateService));
         }
 
         [HttpGet("{username}", Name = "GetBasket")]
@@ -90,6 +94,19 @@ namespace Basket.API.Controllers
             await _basketRepository.DeleteBasketFromUserName(basket.Username);
 
             return Accepted();
+        }
+
+
+        [HttpPost("[action]", Name ="SendEmailReminder")]
+        public ContentResult SendEmailReminder()
+        {
+            var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail("nmt@gmail.com", "iamnmt");
+            var result = new ContentResult
+            {
+                Content = emailTemplate,
+                ContentType = "text/html"
+            };
+            return result;
         }
     }
 }
