@@ -11,6 +11,7 @@ try
     builder.Host.AddAppConfigurations();
     builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddHangfireService();
+    builder.Services.ConfigureServices();
 
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();

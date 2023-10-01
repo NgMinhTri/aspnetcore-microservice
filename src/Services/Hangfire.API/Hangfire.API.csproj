@@ -11,10 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj" />
       <ProjectReference Include="..\..\BuildingBlocks\Shared\Shared.csproj" />
       <ProjectReference Include="..\Ordering\Ordering.Infrastructure\Ordering.Infrastructure.csproj" />
