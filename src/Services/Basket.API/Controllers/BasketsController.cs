@@ -22,19 +22,16 @@ namespace Basket.API.Controllers
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly StockItemGrpcService _stockItemGrpcService;
-        private readonly IEmailTemplateService _emailTemplateService;
 
         public BasketsController(IBasketRepository basketRepository, 
                                 IMapper mapper, 
                                 IPublishEndpoint publishEndpoint,
-                                StockItemGrpcService stockItemGrpcService,
-                                IEmailTemplateService emailTemplateService)
+                                StockItemGrpcService stockItemGrpcService)
         {
             _basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
-            _emailTemplateService = emailTemplateService ?? throw new ArgumentNullException(nameof(emailTemplateService));
         }
 
         [HttpGet("{username}", Name = "GetBasket")]
@@ -97,16 +94,6 @@ namespace Basket.API.Controllers
         }
 
 
-        [HttpPost("[action]", Name ="SendEmailReminder")]
-        public ContentResult SendEmailReminder()
-        {
-            var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail("nmt@gmail.com", "iamnmt");
-            var result = new ContentResult
-            {
-                Content = emailTemplate,
-                ContentType = "text/html"
-            };
-            return result;
-        }
+        
     }
 }
