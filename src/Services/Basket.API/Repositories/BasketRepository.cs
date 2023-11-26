@@ -48,7 +48,7 @@ namespace Basket.API.Repositories
 
             try
             {
-
+                await TriggerSendEmailReminderCheckout(cart);
             }
             catch (Exception)
             {
