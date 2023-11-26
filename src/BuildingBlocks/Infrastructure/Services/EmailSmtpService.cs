@@ -19,30 +19,11 @@ namespace Infrastructure.Services
             _setting = settings ?? throw new ArgumentNullException(nameof(settings));
             _smtpClient = new SmtpClient();
         }
+
+
         public async Task SendEmailAsync(MailRequest request, CancellationToken cancellationToken = default)
         {
-            var emailMessage = new MimeMessage
-            {
-                Sender = new MailboxAddress(_setting.DisplayName, request.From ?? _setting.From),
-                Subject = request.Subject,
-                Body = new BodyBuilder
-                {
-                    HtmlBody = request.Body
-                }.ToMessageBody()
-            };
-
-            if (request.ToAddresses.Any())
-            {
-                foreach(var toAddress in request.ToAddresses)
-                {
-                    emailMessage.To.Add(MailboxAddress.Parse(toAddress));
-                }
-            }
-            else
-            {
-                var toAddress = request.ToAddress;
-                emailMessage.To.Add(MailboxAddress.Parse(toAddress));
-            }
+            var emailMessage = getMimeMessage(request);
 
             try
             {
@@ -62,6 +43,57 @@ namespace Infrastructure.Services
                 await _smtpClient.DisconnectAsync(true, cancellationToken);
                 _smtpClient.Dispose();
             }
+        }
+
+        public void SendEmail(MailRequest request)
+        {
+            var emailMessage = getMimeMessage(request);
+            try
+            {
+                _smtpClient.Connect(_setting.SMTPServer, _setting.Port,
+                    _setting.UseSsl);
+                _smtpClient.Authenticate(_setting.Username, _setting.Password);
+                _smtpClient.Send(emailMessage);
+                _smtpClient.Disconnect(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, ex);
+            }
+            finally
+            {
+                _smtpClient.Disconnect(true);
+                _smtpClient.Dispose();
+            }
+        }
+
+
+        private MimeMessage getMimeMessage(MailRequest request)
+        {
+            var emailMessage = new MimeMessage
+            {
+                Sender = new MailboxAddress(_setting.DisplayName, request.From ?? _setting.From),
+                Subject = request.Subject,
+                Body = new BodyBuilder
+                {
+                    HtmlBody = request.Body
+                }.ToMessageBody()
+            };
+
+            if (request.ToAddresses.Any())
+            {
+                foreach (var toAddress in request.ToAddresses)
+                {
+                    emailMessage.To.Add(MailboxAddress.Parse(toAddress));
+                }
+            }
+            else
+            {
+                var toAddress = request.ToAddress;
+                emailMessage.To.Add(MailboxAddress.Parse(toAddress));
+            }
+
+            return emailMessage;
         }
     }
 }

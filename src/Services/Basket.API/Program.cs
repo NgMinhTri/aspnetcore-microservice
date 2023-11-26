@@ -23,6 +23,7 @@ try
     builder.Services.ConfigureRedis(builder.Configuration);
     builder.Services.ConfigureGrpcService();
     builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+    builder.Services.ConfigureHttpClientService();
 
     //configure Mass transit
     builder.Services.ConfigurationMassTransit();
