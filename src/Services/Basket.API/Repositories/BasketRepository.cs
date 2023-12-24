@@ -39,6 +39,7 @@ namespace Basket.API.Repositories
 
         public async Task<Cart?> UpdateBasket(Cart cart, DistributedCacheEntryOptions options = null)
         {
+            await DeleteBasketFromUserName(cart.Username);
             if (options != null)
                 await _redisCacheService.SetStringAsync(cart.Username,
                     _serializeService.Serialize(cart), options);
@@ -60,6 +61,7 @@ namespace Basket.API.Repositories
 
         public async Task<bool> DeleteBasketFromUserName(string username)
         {
+            await DeleteBasketFromUserName(username);
             try
             {
                 await _redisCacheService.RemoveAsync(username);
@@ -79,8 +81,8 @@ namespace Basket.API.Repositories
             var model = new ReminderCheckoutOrderDto(cart.EmailAddress,
                                                      "Reminder checkout",
                                                      emailTemplate,
-                                                     DateTimeOffset.UtcNow.AddMinutes(3));
-            const string uri = "api/scheduled-jobs/send-email-reminder-checkout-order";
+                                                     DateTimeOffset.UtcNow.AddSeconds(30));
+            var uri = $"{_backgroundJobHttpService.ScheduledJobUrl}/send-email-reminder-checkout-order";
             var response = await _backgroundJobHttpService._client.PostAsJson(uri, model);
             if (response.EnsureSuccessStatusCode().IsSuccessStatusCode)
             {
@@ -92,6 +94,19 @@ namespace Basket.API.Repositories
                 }
             }
         }
+
+        private async Task DeleteReminderCheckoutOrder(string username)
+        {
+            var cart = await GetBasketByUserName(username);
+            if (cart == null || string.IsNullOrEmpty(cart.JobId)) return;
+
+            var jobId = cart.JobId;
+            var uri = $"{_backgroundJobHttpService.ScheduledJobUrl}/delete/jobId/{jobId}";
+            await _backgroundJobHttpService._client.DeleteAsync(uri);
+            _logger.Information($"DeleteReminderCheckoutOrder: Deleted JobId: {jobId}");
+
+        }
+
 
     }
 }

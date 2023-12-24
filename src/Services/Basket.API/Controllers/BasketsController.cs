@@ -7,6 +7,7 @@ using EvenBus.Messages.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Shared.DTOs.Basket;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using ILogger = Serilog.ILogger;
@@ -34,23 +35,25 @@ namespace Basket.API.Controllers
             _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
         }
 
+
+
         [HttpGet("{username}", Name = "GetBasket")]
         [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Cart>> GetBasket([Required] string username)
         {
-            //_logger.Information($"BEGIN: GetBasketByUserName {username}");
-            var result = await _basketRepository.GetBasketByUserName(username);
-            //_logger.Information($"END: GetBasketByUserName {username}");
-
-            return Ok(result ?? new Cart(username));
+            var cart = await _basketRepository.GetBasketByUserName(username);
+            var result = _mapper.Map<CartDto>(cart) ?? new CartDto(username);
+            return Ok(result);
         }
 
+
+
         [HttpPost(Name = "UpdateBasket")]
-        [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Cart>> UpdateBasket([FromBody] Cart cart)
+        [ProducesResponseType(typeof(CartDto), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<CartDto>> UpdateBasket([FromBody] CartDto cartDto)
         {
             // Communicate with Inventory.Product.Grpc and check quantity available of products
-            foreach (var item in cart.Items)
+            foreach (var item in cartDto.Items)
             {
                 var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
                 item.SetAvailableQuantity(stock.Quantity);
@@ -60,9 +63,13 @@ namespace Basket.API.Controllers
                 .SetAbsoluteExpiration(DateTime.UtcNow.AddMinutes(10))
                 .SetSlidingExpiration(TimeSpan.FromMinutes(2));
 
-            var result = await _basketRepository.UpdateBasket(cart, options);
+            var cart = _mapper.Map<Cart>(cartDto);
+            var updatedCart = await _basketRepository.UpdateBasket(cart, options);
+            var result = _mapper.Map<CartDto>(updatedCart);
             return Ok(result);
         }
+
+
 
         [HttpDelete("{username}", Name = "DeleteBasket")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
@@ -73,6 +80,8 @@ namespace Basket.API.Controllers
             _logger.Information($"END: DeleteBasket {username}");
             return Ok(result);
         }
+
+
 
         [Route("[action]")]
         [HttpPost]
