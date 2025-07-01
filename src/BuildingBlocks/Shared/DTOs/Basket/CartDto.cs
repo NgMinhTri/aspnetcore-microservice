@@ -1,16 +1,16 @@
-﻿namespace Basket.API.Entities
+﻿namespace Shared.DTOs.Basket
 {
-    public class Cart
+    public class CartDto
     {
         public string Username { get; set; }
         public string EmailAddress { get; set; }
-        public List<CartItem> Items { get; set; } = new();
+        public List<CartItemDto> Items { get; set; } = new();
 
-        public Cart()
+        public CartDto()
         {
         }
 
-        public Cart(string username)
+        public CartDto(string username)
         {
             Username = username;
         }
